@@ -6,6 +6,7 @@ pipeline {
             steps {
                 script {
                     echo "testing application ${env.BRANCH_NAME}"
+                    echo 'cool'
                 }
             }
         }
