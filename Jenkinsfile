@@ -10,7 +10,7 @@ pipeline {
                 }
             }
         }
-        stage("building app ") {
+        stage("building app") {
             when {
                 expression {
                     env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'staging'
@@ -24,7 +24,7 @@ pipeline {
             }
         }
         
-        stage("deploy") {
+        stage("deploy staging") {
             when {
                 anyOf {
                     branch 'staging'
@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-        stage("deploy") {
+        stage("deploy dev") {
             when {
                 anyOf {
                     branch 'dev'
