@@ -1,38 +1,51 @@
 pipeline {
     agent any
-    tools {
-        maven 'maven_3.9.11'
-    }
+    
     stages {
-        stage("build jar") {
+        stage("testing app") {
             steps {
                 script {
-                    echo 'building application'
-                    sh 'mvn package'
+                    echo "testing application ${env.BRANCH_NAME}"
                 }
             }
         }
-        stage("build image") {
+        stage("building app ") {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'staging'
+                }
+            }
             steps {
                 script {
-                    echo 'building application'
-                    withCredentials([
-                        usernamePassword(credentialsId: 'docker-hub-id', usernameVariable: 'USER', passwordVariable: 'PASSWORD')
-                    ]) {
-                        sh '''
-                            docker build -t cloudqween/private_repo:jma.2.0 .
-                            echo $PASSWORD | docker login -u $USER --password-stdin
-                            docker push cloudqween/private_repo:jma.2.0
-                        '''
-                    }
+                    echo "building application in ${env.BRANCH_NAME}"
+                    
+                }
+            }
+        }
+        
+        stage("deploy") {
+            when {
+                anyOf {
+                    branch 'staging'
+                }
+            }
+            steps {
+                script {
+                    echo 'deploying application to Staging'
                 }
             }
         }
         stage("deploy") {
+            when {
+                anyOf {
+                    branch 'dev'
+                }
+            }
             steps {
                 script {
-                    echo 'deploying application'
+                    input message: "Approve deployment for dev"
                 }
+                echo 'deploying application'
             }
         }
     }
