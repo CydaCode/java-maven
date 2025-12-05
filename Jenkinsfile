@@ -18,6 +18,7 @@ pipeline {
         stage("build jar") {
             steps {
                 script {
+                    echo 'Also testing the webhook'
                     buildJar()
                 }
             }
