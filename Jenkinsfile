@@ -35,6 +35,7 @@ pipeline {
         stage("deploy") {
             steps {
                 script {
+                    echo 'Triggering the Webhook'
                     gv.deployApp()  
                 }
             }
