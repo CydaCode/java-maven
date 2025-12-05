@@ -3,7 +3,7 @@
 Library identifier: 'jenkins-shared-lib@main', retriever: modernSCM([
     $class: 'GitSCMSource',
     remote: 'https://github.com/CydaCode/jenkins-shared-lib.git',
-    credentiaId: 'github-id'
+    credentialId: 'github-id'
 ])
 
 
