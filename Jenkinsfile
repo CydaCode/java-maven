@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 
-@Library("jenkins-shared-lib")
+Library identifier: 'jenkins-shared-lib@main', retriever: modernSCM([
+    $class: 'GitSCMSource',
+    remote: 'https://github.com/CydaCode/jenkins-shared-lib.git',
+    credentiaId: 'github-id'
+])
+
+
 def gv
 pipeline {
     agent any
