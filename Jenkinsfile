@@ -18,7 +18,7 @@ pipeline {
         stage("build jar") {
             steps {
                 script {
-                    echo 'Also testing the webhook again'
+                    echo 'Also testing the webhook again and again'
                     buildJar()
                 }
             }
