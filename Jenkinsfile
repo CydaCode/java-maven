@@ -22,10 +22,12 @@ pipeline {
                 }
             }
         }
-        stage("build image") {
+        stage("build image and login") {
             steps {
                 script {
-                    buildImage()
+                    buildImage 'cloudqween/private_repo:jma.2.0'
+                    dockerLogin()
+                    dockerPush 'cloudqween/private_repo:jma.2.0'
                 }
             }
         }
