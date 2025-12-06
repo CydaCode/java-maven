@@ -1,43 +1,52 @@
-def gv
+
 pipeline {
     agent any
     stages {
-        stage("Initializing groovy") {
+        stage("Incrementing versioning") {
             steps {
                 script {
-                    gv = load "script.groovy"
+                    echo 'Incrementing the image version....'
+                    sh "mvn build-helper:parse-version versions:set \
+                    -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                    versions:commit"
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
                 }
             }
             
         }
-        stage("build stage") {
+        stage("build Jar stage") {
             steps {
                 script {
-                    gv.buildApp()
+                    echo 'Building the Jar Image...'
+                    sh 'mvn clean package'
                 }
             }
             
         }
-        stage("test stage") {
+        stage("build Image stage") {
             steps {
                 script {
-                    gv.testApp()
-                }
+                    echo 'building application'
+                    withCredentials([
+                        usernamePassword(credentialsId: 'docker-hub-id', usernameVariable: 'USER', passwordVariable: 'PASSWORD')
+                    ]) {
+                        sh '''
+                            docker build -t cloudqween/private_repo:${IMAGE_NAME} .
+                            echo $PASSWORD | docker login -u $USER --password-stdin
+                            docker push cloudqween/private_repo:${IMAGE_NAME}
+                            '''
+                        }
+                    }
             }
             
         }
         stage("deploy stage") {
-            input {
-                message 'Select the ennnnnnvironment   to deploy to'
-                ok 'Done'
-                parameters {
-                    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
-                }
-            }
+            
             steps {
                 script {
-                    gv.deployApp()
-                    echo "deploying to ${ENV}"
+                    echo "deploying app"
                 }
             }
             
