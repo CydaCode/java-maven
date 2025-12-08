@@ -8,7 +8,7 @@ pipeline {
         stage("Incrementing versioning") {
             steps {
                 script {
-                    echo 'Incrementing the image version....'
+                    echo 'Incrementing the image version.......'
                     sh "mvn build-helper:parse-version versions:set \
                     -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                     versions:commit"
