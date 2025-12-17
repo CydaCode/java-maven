@@ -71,7 +71,7 @@ pipeline {
 
                             git remote set-url origin https://${USER}:${PASSWORD}@github.com/CydaCode/java-maven.git
                             git add .
-                            git commit "ci: version bump"
+                            git commit -m "ci: version bump"
                             git push origin HEAD:jenkins-jobs
                         '''
                     }
