@@ -54,6 +54,31 @@ pipeline {
             }
             
         }
+        stage("recommit versioning to git stage") {
+            
+            steps {
+                script {
+                    withCredentials([
+                        usernamePassword(credentialsId: 'github-id', usernameVariable: 'USER', passwordVariable: 'PASSWORD')
+                    ]) {
+                        sh '''
+                            git config --global user.email "jenkins@example.com"
+                            git config --global user.name "jenkins"
+
+                            git status
+                            git branch
+                            git config --list
+
+                            git remote set-url origin https://${USER}:${PASSWORD}@github.com/CydaCode/java-maven.git
+                            git add .
+                            git commit "ci: version bump"
+                            git push origin HEAD:jenkins-jobs
+                        '''
+                    }
+                }
+            }
+            
+        }
     }
     post {
         success {
